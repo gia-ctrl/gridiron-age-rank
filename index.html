@@ -108,9 +108,6 @@ button{font-family:inherit;}
           <span style="position:absolute; left:0; right:0; top:50%; height:2px; background:rgba(255,255,255,.14);"></span>
 
           <div style="position:relative; padding:26px 26px 24px;">
-            <div style="font-family:'Archivo',sans-serif; font-size:13px; font-weight:700; color:#FF4B1F; line-height:1.4; margin-bottom:10px; letter-spacing:-.01em;">{{ verdictKicker }}</div>
-
-
             <div style="display:flex; align-items:flex-end; gap:18px; margin-top:14px;">
               <span style="font-family:'Anton',sans-serif; font-size:180px; line-height:.75; letter-spacing:-.03em; color:#fff;">{{ shownCount }}</span>
               <span style="padding-bottom:12px;">
@@ -128,6 +125,8 @@ button{font-family:inherit;}
                 <span style="font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.14em; text-transform:uppercase; color:#6E7873;">Old heads</span>
               </div>
             </div>
+
+            <div style="font-family:'Archivo',sans-serif; font-size:13px; font-weight:700; color:#FF4B1F; line-height:1.4; letter-spacing:-.01em; margin-top:16px;">{{ verdictKicker }}</div>
 
             <div style="display:flex; align-items:center; gap:14px; margin-top:22px; padding-top:20px; border-top:1px solid rgba(255,255,255,.14);">
               <span style="width:52px; height:52px; flex:0 0 auto; position:relative; overflow:hidden; border-radius:6px; display:flex; align-items:center; justify-content:center; background:{{ closest.tint }}; font-family:'Anton',sans-serif; font-size:19px; letter-spacing:.02em; color:#fff;">{{ closest.initials }}{{ closest.img }}</span>
