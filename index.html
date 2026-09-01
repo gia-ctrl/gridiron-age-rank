@@ -108,26 +108,17 @@ button{font-family:inherit;}
           <span style="position:absolute; left:0; right:0; top:50%; height:2px; background:rgba(255,255,255,.14);"></span>
 
           <div style="position:relative; padding:26px 26px 24px;">
+            <div style="font-family:'Archivo',sans-serif; font-size:15px; font-weight:800; color:#FF4B1F; line-height:1.45; margin-bottom:10px; letter-spacing:-.01em;">{{ verdictKicker }}</div>
 
-            <!-- 1. Eyebrow -->
-            <div style="font-family:'JetBrains Mono',monospace; font-size:9.5px; font-weight:700; letter-spacing:.24em; text-transform:uppercase; color:#6E7873;">The verdict</div>
 
-            <!-- 2. Count (dynamic size) -->
-            <div style="font-family:'Anton',sans-serif; font-size:{{ countSize }}; line-height:.8; letter-spacing:-.045em; color:#fff; margin-top:10px;">{{ shownCount }}</div>
-
-            <!-- 3. Headline -->
-            <div style="font-family:'Anton',sans-serif; font-size:38px; line-height:1.02; letter-spacing:.005em; text-transform:uppercase; color:#fff; margin-top:10px; max-width:420px; text-wrap:balance;">{{ countCaption }}</div>
-
-            <!-- 4. Percentage line -->
-            <div style="font-family:'JetBrains Mono',monospace; font-size:11.5px; letter-spacing:.06em; color:#8A9490; margin-top:12px;">{{ pctLine }}</div>
-
-            <!-- 5. Verdict kicker — orange bar + white text -->
-            <div style="display:inline-flex; align-items:flex-start; gap:11px; margin-top:18px;">
-              <div style="width:4px; background:#FF4B1F; border-radius:2px; align-self:stretch; min-height:18px; flex:0 0 auto;"></div>
-              <div style="font-family:'Archivo',sans-serif; font-weight:800; font-size:16px; line-height:1.3; letter-spacing:.01em; color:#fff; text-wrap:pretty;">{{ verdictKicker }}</div>
+            <div style="display:flex; align-items:flex-end; gap:18px; margin-top:14px;">
+              <span style="font-family:'Anton',sans-serif; font-size:180px; line-height:.75; letter-spacing:-.03em; color:#fff;">{{ shownCount }}</span>
+              <span style="padding-bottom:12px;">
+                <span style="display:block; font-family:'Archivo',sans-serif; font-weight:700; font-size:19px; line-height:1.15; color:#fff; max-width:190px; text-wrap:pretty;">{{ countCaption }}</span>
+                <span style="display:block; font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.06em; color:#8A9490; margin-top:8px;">{{ pctLine }}</span>
+              </span>
             </div>
 
-            <!-- 6. Bar -->
             <div style="margin-top:22px;">
               <div style="position:relative; height:10px; border-radius:99px; background:rgba(255,255,255,.11); overflow:hidden;">
                 <span style="position:absolute; left:0; top:0; bottom:0; width:{{ pctW }}; background:#FF4B1F;"></span>
@@ -138,7 +129,6 @@ button{font-family:inherit;}
               </div>
             </div>
 
-            <!-- 7. Age twin row -->
             <div style="display:flex; align-items:center; gap:14px; margin-top:22px; padding-top:20px; border-top:1px solid rgba(255,255,255,.14);">
               <span style="width:52px; height:52px; flex:0 0 auto; position:relative; overflow:hidden; border-radius:6px; display:flex; align-items:center; justify-content:center; background:{{ closest.tint }}; font-family:'Anton',sans-serif; font-size:19px; letter-spacing:.02em; color:#fff;">{{ closest.initials }}{{ closest.img }}</span>
               <span style="min-width:0; flex:1;">
@@ -453,11 +443,10 @@ class Component extends DCLogic {
 
       shownCount: String(S.shown),
       countCaption: caption,
-      pctLine: pctLabel + " of the league is older than you",
-      countSize: String(older.length).length <= 2 ? "200px" : String(older.length).length === 3 ? "160px" : "128px",
+      pctLine: pct + "% of the league is older than you",
       pctW: Math.max(2, 100 - pct) + "%",
       sharePctW: Math.max(2, pct) + "%",
-      sharePctLine: pctLabel + " of the league is older than me",
+      sharePctLine: pct + "% of the league is older than me",
       verdictKicker: kicker,
       twinLine: twinLine,
 
