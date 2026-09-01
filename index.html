@@ -11,6 +11,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="assets/league-mark.png">
 <script src="./support.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
 <x-dc>
@@ -108,9 +109,7 @@ button{font-family:inherit;}
 
           <div style="position:relative; padding:26px 26px 24px;">
             <div style="font-family:'Archivo',sans-serif; font-size:15px; font-weight:800; color:#FF4B1F; line-height:1.45; margin-bottom:10px; letter-spacing:-.01em;">{{ verdictKicker }}</div>
-            <sc-if value="{{ twinLine }}">
-              <div style="font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.08em; color:#8A9490; margin-top:5px;">{{ twinLine }}</div>
-            </sc-if>
+
 
             <div style="display:flex; align-items:flex-end; gap:18px; margin-top:14px;">
               <span style="font-family:'Anton',sans-serif; font-size:180px; line-height:.75; letter-spacing:-.03em; color:#fff;">{{ shownCount }}</span>
@@ -146,9 +145,9 @@ button{font-family:inherit;}
         </div>
 
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:12px;">
-          <button sc-camel-on-click="{{ onShare }}" style="display:flex; align-items:center; justify-content:center; gap:9px; height:56px; border:2px solid #111C19; border-radius:6px; background:#FF4B1F; cursor:pointer; font-weight:700; font-size:15px; color:#fff;" style-hover="background:#111C19;">
+          <button sc-camel-on-click="{{ onMakeCard }}" style="display:flex; align-items:center; justify-content:center; gap:9px; height:56px; border:2px solid #111C19; border-radius:6px; background:#FF4B1F; cursor:pointer; font-weight:700; font-size:15px; color:#fff;" style-hover="background:#111C19;">
             <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"></path></svg>
-            Make my card
+            {{ makeCardLabel }}
           </button>
           <button sc-camel-on-click="{{ onShare }}" style="display:flex; align-items:center; justify-content:center; gap:9px; height:56px; border:2px solid #111C19; border-radius:6px; background:#fff; cursor:pointer; font-weight:700; font-size:15px; color:#111C19;" style-hover="background:#111C19; color:#fff;">
             <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v7a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7M16 6l-4-4-4 4M12 2v13"></path></svg>
@@ -280,7 +279,7 @@ button{font-family:inherit;}
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:700,&quot;height&quot;:1100},&quot;seasonLabel&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Season 2026 / 27&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Content&quot;},&quot;shareUrl&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;gridiron.getpicks.app&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Content&quot;},&quot;dataNote&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Active NFL rosters · nflverse&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Content&quot;},&quot;showPicks&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Branding&quot;}}">
 class Component extends DCLogic {
-  state = { roster: null, month: 3, day: 11, year: 2001, answered: false, listOpen: false, shown: 0, shareOpen: false, copied: false };
+  state = { roster: null, month: 3, day: 11, year: 2001, answered: false, listOpen: false, shown: 0, shareOpen: false, copied: false, makeCardLabel: 'Make my card' };
 
   componentWillUnmount() { clearInterval(this._t); }
 
@@ -398,6 +397,24 @@ class Component extends DCLogic {
       onReset: () => { clearInterval(this._t); this.setState({ answered: false, listOpen: false }); },
       onToggleList: () => this.setState(s => ({ listOpen: !s.listOpen })),
       onShare: () => this.setState({ shareOpen: true, copied: false }),
+      onMakeCard: () => {
+        const el = document.querySelector("#share-card-inner");
+        if (!el) { this.setState({ shareOpen: true }); return; }
+        // Use html2canvas if available, else open share modal
+        if (window.html2canvas) {
+          this.setState({ makeCardLabel: "Generating..." });
+          window.html2canvas(el, { scale: 2.5, useCORS: true, backgroundColor: "#111C19" }).then(c => {
+            const a = document.createElement("a");
+            a.download = "my-nfl-age-rank.png";
+            a.href = c.toDataURL("image/png");
+            a.click();
+            this.setState({ makeCardLabel: "Make my card" });
+          }).catch(() => this.setState({ shareOpen: true, makeCardLabel: "Make my card" }));
+        } else {
+          this.setState({ shareOpen: true });
+        }
+      },
+      makeCardLabel: S.makeCardLabel || "Make my card",
       onCloseShare: () => this.setState({ shareOpen: false }),
       onCopy: () => {
         const txt = caption;
