@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How many NFL players are older than you?</title>
+<meta name="description" content="Enter your birthday and find out how many active NFL players are older than you. 1,695 players, real rosters.">
+<meta property="og:title" content="How many NFL players are older than you?">
+<meta property="og:description" content="Enter your birthday. Find your age twin in the NFL.">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="assets/league-mark.png">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:#EFEBE0;color:#111C19;font-family:'Archivo',system-ui,sans-serif;-webkit-font-smoothing:antialiased;}
+a{color:#FF4B1F;text-decoration:none;}
+a:hover{color:#D93A12;}
+select{font-family:inherit;-webkit-appearance:none;appearance:none;}
+button{font-family:inherit;}
+@keyframes riseIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+@keyframes chalkIn{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+</style>
+<template id="__bundler_thumbnail">
+<svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg"><rect width="1200" height="800" fill="#EFEBE0"></rect><rect x="300" y="240" width="600" height="320" rx="24" fill="#111C19"></rect><text x="600" y="470" text-anchor="middle" font-family="Helvetica,Arial,sans-serif" font-size="160" font-weight="900" fill="#FF4B1F">NFL</text></svg>
+</template>
+</helmet>
+
+<div style="min-height:100vh; background:#EFEBE0; background-image:repeating-linear-gradient(90deg,rgba(17,28,25,.055) 0 1px,transparent 1px 44px); padding:0 20px 90px;">
+
+  <div style="max-width:620px; margin:0 auto;">
+
+    <div style="display:flex; align-items:center; gap:14px; padding:24px 0 0;">
+      <img src="assets/league-mark.png" alt="League mark" style="width:44px; height:44px; flex:0 0 auto; object-fit:contain; display:block;">
+      <span style="min-width:0;">
+        <span style="display:block; font-family:'JetBrains Mono',monospace; font-size:9.5px; font-weight:700; letter-spacing:.2em; text-transform:uppercase; color:#111C19;">Gridiron</span>
+        <span style="display:block; font-family:'JetBrains Mono',monospace; font-size:9.5px; font-weight:700; letter-spacing:.2em; text-transform:uppercase; color:#8A9490; margin-top:4px;">{{ seasonLabel }}</span>
+      </span>
+      <span style="margin-left:auto; font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.14em; text-transform:uppercase; color:#8A9490;">{{ rosterLabel }}</span>
+    </div>
+
+    <div style="padding:60px 0 0;">
+      <h1 style="font-family:'Anton',sans-serif; font-size:68px; line-height:1.04; letter-spacing:.005em; text-transform:uppercase;">
+        <span style="display:block; color:#111C19;">How many</span>
+        <span style="display:block; color:#111C19;">NFL players</span>
+        <span style="display:block; color:#FF4B1F; margin-top:.16em;">are older</span>
+        <span style="display:block; color:#FF4B1F;">than you?</span>
+      </h1>
+      <div style="height:5px; margin-top:30px; background:#111C19; transform-origin:left; animation:chalkIn .5s cubic-bezier(.2,.8,.2,1) both;"></div>
+      <div style="display:flex; justify-content:space-between; margin-top:9px;">
+        <sc-for list="{{ yardMarks }}" as="y" hint-placeholder-count="9">
+          <span style="font-family:'JetBrains Mono',monospace; font-size:10px; font-weight:700; letter-spacing:.1em; color:#A8B0AB;">{{ y }}</span>
+        </sc-for>
+      </div>
+    </div>
+
+    <sc-if value="{{ asking }}" hint-placeholder-val="{{ true }}">
+      <div style="margin-top:38px; background:#fff; border:2px solid #111C19; border-radius:8px; box-shadow:6px 6px 0 #111C19;">
+        <div style="padding:22px 24px 24px;">
+          <div style="font-family:'JetBrains Mono',monospace; font-size:10.5px; font-weight:700; letter-spacing:.2em; text-transform:uppercase; color:#111C19;">Your date of birth</div>
+          <div style="display:grid; grid-template-columns:1.4fr 1fr 1fr; gap:9px; margin-top:14px;">
+            <span style="position:relative; display:block;">
+              <select sc-camel-on-change="{{ onMonth }}" style="width:100%; height:56px; padding:0 34px 0 14px; border:2px solid #DDD8CB; border-radius:6px; background:#F7F5EF; font-size:16px; font-weight:600; color:#111C19; cursor:pointer;">
+                <sc-for list="{{ months }}" as="m" hint-placeholder-count="12">
+                  <option value="{{ m.v }}" selected="{{ m.sel }}">{{ m.label }}</option>
+                </sc-for>
+              </select>
+              <span style="position:absolute; right:14px; top:23px; pointer-events:none; font-size:11px; color:#8A9490;">▾</span>
+            </span>
+            <span style="position:relative; display:block;">
+              <select sc-camel-on-change="{{ onDay }}" style="width:100%; height:56px; padding:0 30px 0 14px; border:2px solid #DDD8CB; border-radius:6px; background:#F7F5EF; font-family:'JetBrains Mono',monospace; font-size:16px; font-weight:700; color:#111C19; cursor:pointer;">
+                <sc-for list="{{ days }}" as="d" hint-placeholder-count="31">
+                  <option value="{{ d.v }}" selected="{{ d.sel }}">{{ d.label }}</option>
+                </sc-for>
+              </select>
+              <span style="position:absolute; right:12px; top:23px; pointer-events:none; font-size:11px; color:#8A9490;">▾</span>
+            </span>
+            <span style="position:relative; display:block;">
+              <select sc-camel-on-change="{{ onYear }}" style="width:100%; height:56px; padding:0 30px 0 14px; border:2px solid #DDD8CB; border-radius:6px; background:#F7F5EF; font-family:'JetBrains Mono',monospace; font-size:16px; font-weight:700; color:#111C19; cursor:pointer;">
+                <sc-for list="{{ years }}" as="y" hint-placeholder-count="40">
+                  <option value="{{ y.v }}" selected="{{ y.sel }}">{{ y.label }}</option>
+                </sc-for>
+              </select>
+              <span style="position:absolute; right:12px; top:23px; pointer-events:none; font-size:11px; color:#8A9490;">▾</span>
+            </span>
+          </div>
+          <button sc-camel-on-click="{{ onSubmit }}" style="width:100%; display:flex; align-items:center; justify-content:center; gap:10px; height:60px; margin-top:14px; border:2px solid #111C19; border-radius:6px; background:#FF4B1F; cursor:pointer; font-family:'Anton',sans-serif; font-size:22px; letter-spacing:.03em; text-transform:uppercase; color:#fff;" style-hover="background:#111C19;">
+            Snap the ball
+            <span style="font-family:'Archivo',sans-serif; font-size:17px;">→</span>
+          </button>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ answered }}" hint-placeholder-val="{{ false }}">
+      <div style="margin-top:38px; animation:riseIn .35s cubic-bezier(.2,.8,.2,1) both;">
+
+        <div style="position:relative; overflow:hidden; border:2px solid #111C19; border-radius:8px; box-shadow:6px 6px 0 #111C19; background:#111C19;">
+          <span style="position:absolute; inset:0; background-image:repeating-linear-gradient(90deg,rgba(255,255,255,.07) 0 1px,transparent 1px 40px);"></span>
+          <span style="position:absolute; left:0; right:0; top:50%; height:2px; background:rgba(255,255,255,.14);"></span>
+
+          <div style="position:relative; padding:26px 26px 24px;">
+            <div style="font-family:'JetBrains Mono',monospace; font-size:10px; font-weight:700; letter-spacing:.24em; text-transform:uppercase; color:#FF4B1F;">{{ verdictKicker }}</div>
+
+            <div style="display:flex; align-items:flex-end; gap:18px; margin-top:14px;">
+              <span style="font-family:'Anton',sans-serif; font-size:132px; line-height:.78; letter-spacing:-.03em; color:#fff;">{{ shownCount }}</span>
+              <span style="padding-bottom:12px;">
+                <span style="display:block; font-family:'Archivo',sans-serif; font-weight:700; font-size:19px; line-height:1.15; color:#fff; max-width:190px; text-wrap:pretty;">{{ countCaption }}</span>
+                <span style="display:block; font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.06em; color:#8A9490; margin-top:8px;">{{ pctLine }}</span>
+              </span>
+            </div>
+
+            <div style="margin-top:22px;">
+              <div style="position:relative; height:10px; border-radius:99px; background:rgba(255,255,255,.11); overflow:hidden;">
+                <span style="position:absolute; left:0; top:0; bottom:0; width:{{ pctW }}; background:#FF4B1F;"></span>
+              </div>
+              <div style="display:flex; justify-content:space-between; margin-top:8px;">
+                <span style="font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.14em; text-transform:uppercase; color:#6E7873;">Rookies</span>
+                <span style="font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.14em; text-transform:uppercase; color:#6E7873;">Old heads</span>
+              </div>
+            </div>
+
+            <div style="display:flex; align-items:center; gap:14px; margin-top:22px; padding-top:20px; border-top:1px solid rgba(255,255,255,.14);">
+              <span style="width:52px; height:52px; flex:0 0 auto; position:relative; overflow:hidden; border-radius:6px; display:flex; align-items:center; justify-content:center; background:{{ closest.tint }}; font-family:'Anton',sans-serif; font-size:19px; letter-spacing:.02em; color:#fff;">{{ closest.initials }}{{ closest.img }}</span>
+              <span style="min-width:0; flex:1;">
+                <span style="display:block; font-family:'JetBrains Mono',monospace; font-size:9px; font-weight:700; letter-spacing:.2em; text-transform:uppercase; color:#8A9490;">Your age twin</span>
+                <span style="display:block; font-family:'Archivo',sans-serif; font-weight:700; font-size:17px; color:#fff; margin-top:5px;">{{ closest.name }}</span>
+                <span style="display:block; font-family:'JetBrains Mono',monospace; font-size:11px; color:#8A9490; margin-top:3px;">{{ closest.meta }}</span>
+              </span>
+              <span style="flex:0 0 auto; text-align:right;">
+                <span style="display:block; font-family:'Anton',sans-serif; font-size:24px; line-height:1; color:#FF4B1F;">{{ closest.gap }}</span>
+                <span style="display:block; font-family:'JetBrains Mono',monospace; font-size:9px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:#8A9490; margin-top:4px;">{{ closest.gapWord }}</span>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:12px;">
+          <button sc-camel-on-click="{{ onShare }}" style="display:flex; align-items:center; justify-content:center; gap:9px; height:56px; border:2px solid #111C19; border-radius:6px; background:#FF4B1F; cursor:pointer; font-weight:700; font-size:15px; color:#fff;" style-hover="background:#111C19;">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"></path></svg>
+            Make my card
+          </button>
+          <button sc-camel-on-click="{{ onShare }}" style="display:flex; align-items:center; justify-content:center; gap:9px; height:56px; border:2px solid #111C19; border-radius:6px; background:#fff; cursor:pointer; font-weight:700; font-size:15px; color:#111C19;" style-hover="background:#111C19; color:#fff;">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v7a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7M16 6l-4-4-4 4M12 2v13"></path></svg>
+            Share it
+          </button>
+        </div>
+
+        <button sc-camel-on-click="{{ onToggleList }}" style="width:100%; height:50px; margin-top:10px; border:2px dashed #C9C3B4; border-radius:6px; background:transparent; cursor:pointer; font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:700; letter-spacing:.16em; text-transform:uppercase; color:#5F6964;" style-hover="border-color:#111C19; color:#111C19;">{{ listToggleLabel }}</button>
+
+        <sc-if value="{{ listOpen }}" hint-placeholder-val="{{ false }}">
+          <div style="margin-top:20px;">
+            <div style="display:flex; align-items:baseline; gap:10px; padding-bottom:12px; border-bottom:2px solid #111C19;">
+              <span style="font-family:'Anton',sans-serif; font-size:22px; text-transform:uppercase;">The old guard</span>
+              <span style="margin-left:auto; font-family:'JetBrains Mono',monospace; font-size:10px; font-weight:700; letter-spacing:.16em; text-transform:uppercase; color:#8A9490;">Oldest first</span>
+            </div>
+            <sc-for list="{{ olderList }}" as="p" hint-placeholder-count="8">
+              <div style="display:flex; align-items:center; gap:13px; padding:13px 4px; border-bottom:1px solid rgba(17,28,25,.1);">
+                <span style="width:26px; flex:0 0 auto; font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:700; color:#A8B0AB;">{{ p.rank }}</span>
+                <span style="width:40px; height:40px; flex:0 0 auto; position:relative; overflow:hidden; border-radius:5px; display:flex; align-items:center; justify-content:center; background:{{ p.tint }}; font-family:'Anton',sans-serif; font-size:15px; letter-spacing:.02em; color:#fff;">{{ p.initials }}{{ p.img }}</span>
+                <span style="min-width:0; flex:1;">
+                  <span style="display:block; font-weight:700; font-size:15px;">{{ p.name }}</span>
+                  <span style="display:block; font-family:'JetBrains Mono',monospace; font-size:11px; color:#7C857F; margin-top:2px;">{{ p.meta }}</span>
+                </span>
+                <span style="flex:0 0 auto; text-align:right;">
+                  <span style="display:block; font-family:'Anton',sans-serif; font-size:20px; color:#111C19;">{{ p.age }}</span>
+                  <span style="display:block; font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:.14em; text-transform:uppercase; color:#A8B0AB;">yrs</span>
+                </span>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+
+        <button sc-camel-on-click="{{ onReset }}" style="width:100%; margin-top:20px; border:0; background:none; cursor:pointer; font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:700; letter-spacing:.16em; text-transform:uppercase; color:#8A9490; padding:12px 0;" style-hover="color:#FF4B1F;">Run it again</button>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ shareOpen }}" hint-placeholder-val="{{ false }}">
+      <div style="position:fixed; inset:0; z-index:60; display:flex; align-items:flex-start; justify-content:center; overflow-y:auto; padding:32px 20px 48px; background:rgba(17,28,25,.72);">
+        <div style="width:100%; max-width:396px; animation:riseIn .28s cubic-bezier(.2,.8,.2,1) both;">
+
+          <div style="display:flex; align-items:center; gap:12px; margin-bottom:14px;">
+            <span style="font-family:'JetBrains Mono',monospace; font-size:10px; font-weight:700; letter-spacing:.22em; text-transform:uppercase; color:#EFEBE0;">Your card is ready</span>
+            <button sc-camel-on-click="{{ onCloseShare }}" style="margin-left:auto; width:30px; height:30px; display:flex; align-items:center; justify-content:center; border:1px solid rgba(239,235,224,.34); border-radius:50%; background:transparent; cursor:pointer; font-size:15px; color:#EFEBE0;" style-hover="background:#EFEBE0; color:#111C19;">×</button>
+          </div>
+
+          <div style="position:relative; overflow:hidden; border-radius:10px; background:#111C19; box-shadow:0 24px 60px rgba(0,0,0,.5);">
+            <span style="position:absolute; inset:0; background-image:repeating-linear-gradient(90deg,rgba(255,255,255,.07) 0 1px,transparent 1px 34px);"></span>
+            <span style="position:absolute; left:0; right:0; top:0; height:5px; background:#FF4B1F;"></span>
+
+            <div style="position:relative; padding:26px 24px 22px;">
+              <div style="display:flex; align-items:center; gap:11px;">
+                <img src="assets/league-mark.png" alt="" style="width:32px; height:32px; object-fit:contain; display:block;">
+                <span style="font-family:'JetBrains Mono',monospace; font-size:9px; font-weight:700; letter-spacing:.2em; text-transform:uppercase; color:#8A9490;">{{ seasonLabel }}</span>
+              </div>
+
+              <div style="font-family:'Anton',sans-serif; font-size:118px; line-height:.8; letter-spacing:-.03em; color:#fff; margin-top:26px;">{{ shareCount }}</div>
+              <div style="font-family:'Anton',sans-serif; font-size:25px; line-height:1.1; text-transform:uppercase; color:#FF4B1F; margin-top:12px;">{{ shareLine }}</div>
+
+              <div style="margin-top:20px;">
+                <div style="position:relative; height:8px; border-radius:99px; background:rgba(255,255,255,.11); overflow:hidden;">
+                  <span style="position:absolute; left:0; top:0; bottom:0; width:{{ sharePctW }}; background:#FF4B1F;"></span>
+                </div>
+                <div style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.04em; color:#8A9490; margin-top:9px;">{{ sharePctLine }}</div>
+              </div>
+
+              <div style="display:flex; align-items:center; gap:12px; margin-top:20px; padding-top:18px; border-top:1px solid rgba(255,255,255,.14);">
+                <span style="width:42px; height:42px; flex:0 0 auto; position:relative; overflow:hidden; border-radius:5px; display:flex; align-items:center; justify-content:center; background:{{ closest.tint }}; font-family:'Anton',sans-serif; font-size:16px; letter-spacing:.02em; color:#fff;">{{ closest.initials }}{{ closest.img }}</span>
+                <span style="min-width:0; flex:1;">
+                  <span style="display:block; font-family:'JetBrains Mono',monospace; font-size:8.5px; font-weight:700; letter-spacing:.2em; text-transform:uppercase; color:#8A9490;">My age twin</span>
+                  <span style="display:block; font-weight:700; font-size:15px; color:#fff; margin-top:4px;">{{ closest.name }}</span>
+                </span>
+                <span style="flex:0 0 auto; text-align:right;">
+                  <span style="display:block; font-family:'Anton',sans-serif; font-size:19px; line-height:1; color:#FF4B1F;">{{ closest.gap }}</span>
+                  <span style="display:block; font-family:'JetBrains Mono',monospace; font-size:8.5px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:#8A9490; margin-top:4px;">{{ closest.gapWordMe }}</span>
+                </span>
+              </div>
+
+              <div style="display:flex; align-items:center; justify-content:center; gap:9px; margin-top:20px; padding-top:16px; border-top:1px solid rgba(255,255,255,.14);">
+                <sc-if value="{{ showPicks }}" hint-placeholder-val="{{ true }}">
+                  <img src="assets/getpicks-logo.png" alt="getPicks" style="height:13px; width:auto; display:block; opacity:.55;">
+                </sc-if>
+              </div>
+            </div>
+          </div>
+
+          <div style="position:relative; overflow:hidden; margin-top:14px; border-radius:8px; background:#0B1311; border:1px solid rgba(239,235,224,.12);">
+            <span style="position:absolute; inset:0; background-image:repeating-linear-gradient(115deg,rgba(239,235,224,.05) 0 1px,transparent 1px 11px);"></span>
+            <span style="position:absolute; right:-60px; top:-70px; width:180px; height:180px; border-radius:50%; background:radial-gradient(circle,rgba(255,75,31,.22),transparent 66%);"></span>
+            <span style="position:absolute; left:0; top:0; bottom:0; width:2px; background:#FF4B1F;"></span>
+            <div style="position:relative; padding:13px 15px 14px 17px;">
+              <div style="display:flex; align-items:center; gap:10px;">
+                <span style="font-family:'JetBrains Mono',monospace; font-size:9px; font-weight:700; letter-spacing:.2em; text-transform:uppercase; color:#6E7873;">Caption</span>
+                <button sc-camel-on-click="{{ onCopy }}" style="margin-left:auto; display:flex; align-items:center; gap:6px; border:0; background:none; cursor:pointer; font-family:'JetBrains Mono',monospace; font-size:9.5px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:{{ copyFg }};">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M5 15V5a2 2 0 0 1 2-2h10"></path></svg>
+                  {{ copyLabel }}
+                </button>
+              </div>
+              <p style="font-size:13px; line-height:1.5; color:#C6CBC7; margin-top:9px; text-wrap:pretty;">{{ caption }}</p>
+            </div>
+          </div>
+
+          <button style="width:100%; display:flex; align-items:center; justify-content:center; gap:10px; height:56px; margin-top:12px; border:0; border-radius:6px; background:#FF4B1F; cursor:pointer; font-family:'Anton',sans-serif; font-size:19px; letter-spacing:.03em; text-transform:uppercase; color:#fff;" style-hover="background:#EFEBE0; color:#111C19;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"></path></svg>
+            Download PNG
+          </button>
+
+          <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:9px; margin-top:9px;">
+            <sc-for list="{{ shareTargets }}" as="t" hint-placeholder-count="3">
+              <button style="height:48px; border:1px solid rgba(239,235,224,.28); border-radius:6px; background:transparent; cursor:pointer; font-family:'JetBrains Mono',monospace; font-size:10.5px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#EFEBE0;" style-hover="background:#EFEBE0; color:#111C19;">{{ t }}</button>
+            </sc-for>
+          </div>
+
+          <button sc-camel-on-click="{{ onCloseShare }}" style="width:100%; margin-top:16px; border:0; background:none; cursor:pointer; font-family:'JetBrains Mono',monospace; font-size:10.5px; font-weight:700; letter-spacing:.16em; text-transform:uppercase; color:#A8B0AB; padding:10px 0;" style-hover="color:#fff;">Back to my result</button>
+        </div>
+      </div>
+    </sc-if>
+
+    <div style="display:flex; align-items:center; gap:10px; margin-top:44px; padding-top:18px; border-top:1px solid rgba(17,28,25,.12);">
+      <span style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.1em; color:#A8B0AB;">{{ dataNote }}</span>
+      <sc-if value="{{ showPicks }}" hint-placeholder-val="{{ true }}">
+        <span style="margin-left:auto; display:flex; align-items:center; gap:7px;">
+          <span style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.1em; color:#A8B0AB;">Built by</span>
+          <img src="assets/getpicks-logo-ink.png" alt="getPicks" style="height:13px; width:auto; display:block; opacity:.72;">
+        </span>
+      </sc-if>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:700,&quot;height&quot;:1100},&quot;seasonLabel&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Season 2026 / 27&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Content&quot;},&quot;shareUrl&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;gridiron.getpicks.app&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Content&quot;},&quot;dataNote&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Active NFL rosters · nflverse&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Content&quot;},&quot;showPicks&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Branding&quot;}}">
+class Component extends DCLogic {
+  state = { roster: null, month: 3, day: 11, year: 2001, answered: false, listOpen: false, shown: 0, shareOpen: false, copied: false };
+
+  componentWillUnmount() { clearInterval(this._t); }
+
+  componentDidMount() {
+    fetch("roster.json")
+      .then(r => r.json())
+      .then(list => this.setState({ roster: list.map(p => ({ name: p.n, team: p.t, pos: p.p, photo: p.h || "", dob: new Date(p.d + "T00:00:00Z") })) }))
+      .catch(() => {});
+  }
+
+  roster() {
+    if (this.state.roster && this.state.roster.length) return this.state.roster;
+    return [
+      ["Aaron Rodgers", "Pittsburgh Steelers", "QB", "1983-12-02"],
+      ["Joe Flacco", "Cincinnati Bengals", "QB", "1985-01-16"],
+      ["Cameron Heyward", "Pittsburgh Steelers", "DT", "1989-05-06"],
+      ["Travis Kelce", "Kansas City Chiefs", "TE", "1989-10-05"],
+      ["Matthew Stafford", "LA Rams", "QB", "1988-02-07"],
+      ["Derrick Henry", "Baltimore Ravens", "RB", "1994-01-04"],
+      ["Patrick Mahomes", "Kansas City Chiefs", "QB", "1995-09-17"],
+      ["Lamar Jackson", "Baltimore Ravens", "QB", "1997-01-07"],
+      ["Ja'Marr Chase", "Cincinnati Bengals", "WR", "2000-03-01"],
+      ["Caleb Williams", "Chicago Bears", "QB", "2001-11-18"],
+      ["Brock Bowers", "Las Vegas Raiders", "TE", "2002-12-14"],
+      ["Ashton Jeanty", "Las Vegas Raiders", "RB", "2003-12-30"]
+    ].map(r => ({ name: r[0], team: r[1], pos: r[2], dob: new Date(r[3] + "T00:00:00Z") }));
+  }
+
+  tint(name) {
+    const pool = ["#1E4D3B", "#8E2C1E", "#26405E", "#5C3A1E", "#3D2A50", "#0F4C4C", "#6B4A12", "#4A1F35"];
+    let h = 0;
+    for (let i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) % 9973;
+    return pool[h % pool.length];
+  }
+
+  animateTo(n) {
+    clearInterval(this._t);
+    const start = performance.now(), dur = 620;
+    this._t = setInterval(() => {
+      const k = Math.min(1, (performance.now() - start) / dur);
+      const eased = 1 - Math.pow(1 - k, 3);
+      this.setState({ shown: Math.round(n * eased) });
+      if (k >= 1) clearInterval(this._t);
+    }, 16);
+  }
+
+  renderVals() {
+    const S = this.state;
+    const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+    const all = this.roster();
+    const mine = new Date(Date.UTC(S.year, S.month - 1, S.day));
+
+    const older = all.filter(p => p.dob < mine).sort((a, b) => a.dob - b.dob);
+    const total = all.length;
+    const pct = Math.round((older.length / total) * 100);
+
+    const yearsBetween = (a, b) => Math.abs(a - b) / (1000 * 60 * 60 * 24 * 365.25);
+    const age = p => Math.floor(yearsBetween(p.dob, new Date()));
+
+    let closest = all[0];
+    for (const p of all) if (yearsBetween(p.dob, mine) < yearsBetween(closest.dob, mine)) closest = p;
+    const gapDays = Math.round(Math.abs(closest.dob - mine) / 86400000);
+    const gapLabel = gapDays < 31
+      ? gapDays + (gapDays === 1 ? " day" : " days")
+      : gapDays < 365
+        ? Math.round(gapDays / 30) + (Math.round(gapDays / 30) === 1 ? " month" : " months")
+        : (gapDays / 365.25).toFixed(1) + " years";
+    const isOlder = closest.dob < mine;
+    const gapWord = isOlder ? "older than you" : "younger than you";
+    const gapWordMe = isOlder ? "older than me" : "younger than me";
+
+    const kicker =
+      pct >= 90 ? "Certified rookie" :
+      pct >= 65 ? "Still got a few seasons" :
+      pct >= 35 ? "Prime of your career" :
+      pct >= 12 ? "Veteran presence" : "Hall of Fame just for surviving";
+
+    const caption =
+      older.length === 0 ? "You are older than the entire league." :
+      older.length === 1 ? "NFL player is older than you." : "NFL players are older than you.";
+
+    const photoEl = url => url ? React.createElement("img", { src: url, alt: "", style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "top center" } }) : null;
+    const shareUrl = this.props.shareUrl ?? "gridiron.getpicks.app";
+    const countPhrase = pct <= 20 ? "Only " + older.length : String(older.length);
+    const caption2 = older.length === 0
+      ? "I am older than every single player in the NFL. " + kicker + "."
+      : countPhrase + (older.length === 1 ? " NFL player is" : " NFL players are") + " older than me. " + kicker + ". My age twin is " + closest.name + ", " + gapLabel + " " + gapWordMe + ".";
+
+    return {
+      seasonLabel: this.props.seasonLabel ?? "Season 2026 / 27",
+      rosterLabel: total + " players",
+      dataNote: this.props.dataNote ?? "Active NFL rosters · nflverse",
+      showPicks: this.props.showPicks ?? true,
+      yardMarks: ["10","20","30","40","50","40","30","20","10"],
+
+      months: MONTHS.map((label, i) => ({ v: String(i + 1), label, sel: S.month === i + 1 })),
+      days: Array.from({ length: 31 }, (_, i) => ({ v: String(i + 1), label: String(i + 1), sel: S.day === i + 1 })),
+      years: Array.from({ length: 62 }, (_, i) => 2010 - i).map(y => ({ v: String(y), label: String(y), sel: S.year === y })),
+
+      onMonth: e => this.setState({ month: +e.target.value }),
+      onDay: e => this.setState({ day: +e.target.value }),
+      onYear: e => this.setState({ year: +e.target.value }),
+      onSubmit: () => { this.setState({ answered: true, shown: 0 }); this.animateTo(older.length); },
+      onReset: () => { clearInterval(this._t); this.setState({ answered: false, listOpen: false }); },
+      onToggleList: () => this.setState(s => ({ listOpen: !s.listOpen })),
+      onShare: () => this.setState({ shareOpen: true, copied: false }),
+      onCloseShare: () => this.setState({ shareOpen: false }),
+      onCopy: () => {
+        const txt = caption;
+        if (navigator.clipboard) navigator.clipboard.writeText(txt).catch(() => {});
+        this.setState({ copied: true });
+        clearTimeout(this._c);
+        this._c = setTimeout(() => this.setState({ copied: false }), 1600);
+      },
+
+      shareOpen: S.shareOpen,
+      shareCount: String(older.length),
+      shareLine: older.length === 1 ? "NFL player is older than me" : "NFL players are older than me",
+      shareUrl: this.props.shareUrl ?? "gridiron.getpicks.app",
+      caption: caption2,
+      copyLabel: S.copied ? "Copied ✓" : "Copy",
+      copyFg: S.copied ? "#FF4B1F" : "#A8B0AB",
+      shareTargets: ["X", "WhatsApp", "Stories"],
+
+      asking: !S.answered,
+      answered: S.answered,
+      listOpen: S.listOpen,
+      listToggleLabel: S.listOpen ? "Hide the list ↑" : (older.length > 120 ? "See the oldest 120 ↓" : "See all " + older.length + " ↓"),
+
+      shownCount: String(S.shown),
+      countCaption: caption,
+      pctLine: pct + "% of the league is older than you",
+      pctW: Math.max(2, 100 - pct) + "%",
+      sharePctW: Math.max(2, pct) + "%",
+      sharePctLine: pct + "% of the league is older than me",
+      verdictKicker: kicker,
+
+      closest: {
+        name: closest.name,
+        meta: closest.team + " · " + closest.pos + " · " + closest.dob.toISOString().slice(0, 10),
+        initials: closest.name.split(" ").map(w => w[0]).slice(0, 2).join(""),
+        img: photoEl(closest.photo),
+        tint: this.tint(closest.name),
+        gap: gapLabel,
+        gapWord: gapWord,
+        gapWordMe: gapWordMe
+      },
+
+      olderList: older.slice(0, 120).map((p, i) => ({
+        rank: String(i + 1).padStart(2, "0"),
+        name: p.name,
+        meta: p.team + " · " + p.pos + " · " + p.dob.toISOString().slice(0, 10),
+        initials: p.name.split(" ").map(w => w[0]).slice(0, 2).join(""),
+        img: photoEl(p.photo),
+        tint: this.tint(p.name),
+        age: String(age(p))
+      }))
+    };
+  }
+}
+</script>
+</body>
+</html>
