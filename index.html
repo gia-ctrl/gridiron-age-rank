@@ -345,6 +345,7 @@ class Component extends DCLogic {
     const older = all.filter(p => p.dob < mine).sort((a, b) => a.dob - b.dob);
     const total = all.length;
     const pct = Math.round((older.length / total) * 100);
+    const pctLabel = (older.length > 0 && pct === 0) ? "<1%" : (older.length < total && pct === 100) ? ">99%" : pct + "%";
 
     const yearsBetween = (a, b) => Math.abs(a - b) / (1000 * 60 * 60 * 24 * 365.25);
     const age = p => Math.floor(yearsBetween(p.dob, new Date()));
