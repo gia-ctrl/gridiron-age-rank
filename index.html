@@ -108,6 +108,9 @@ button{font-family:inherit;}
 
           <div style="position:relative; padding:26px 26px 24px;">
             <div style="font-family:'JetBrains Mono',monospace; font-size:10px; font-weight:700; letter-spacing:.24em; text-transform:uppercase; color:#FF4B1F;">{{ verdictKicker }}</div>
+            <sc-if value="{{ twinLine }}">
+              <div style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.12em; color:#8A9490; margin-top:6px;">{{ twinLine }}</div>
+            </sc-if>
 
             <div style="display:flex; align-items:flex-end; gap:18px; margin-top:14px;">
               <span style="font-family:'Anton',sans-serif; font-size:132px; line-height:.78; letter-spacing:-.03em; color:#fff;">{{ shownCount }}</span>
@@ -350,10 +353,21 @@ class Component extends DCLogic {
     const gapWordMe = isOlder ? "older than me" : "younger than me";
 
     const kicker =
-      pct >= 90 ? "Certified rookie" :
-      pct >= 65 ? "Still got a few seasons" :
-      pct >= 35 ? "Prime of your career" :
-      pct >= 12 ? "Veteran presence" : "Hall of Fame just for surviving";
+      older.length === 0 ? "You are older than EVERY active NFL player. Time to hang up the cleats, legend." :
+      pct >= 90 ? "Literally a baby. Aaron Rodgers has cleats older than you." :
+      pct >= 65 ? "You've got time. The whole league is warming up for you." :
+      pct >= 35 ? "Smack in the middle. You belong on this field." :
+      pct >= 12 ? "You\'re the grizzled vet nobody messes with in the locker room." :
+      "Older than " + (100 - pct) + "% of the NFL. Some of these guys weren\'t born when you graduated high school.";
+
+    const gapDays2 = closest ? Math.abs(closest.dob - mine) / 86400000 : 999;
+    const closestYear = closest ? new Date(closest.dob).getFullYear() : 0;
+    const myYear = new Date(mine).getFullYear();
+    const twinLine = closest && gapDays2 < 30
+      ? "You and " + closest.name + " share basically the same birthday."
+      : closest && closestYear === myYear
+        ? "You were born the same year as " + closest.name + "."
+        : null;
 
     const caption =
       older.length === 0 ? "You are older than the entire league." :
@@ -363,7 +377,7 @@ class Component extends DCLogic {
     const shareUrl = this.props.shareUrl ?? "gridiron.getpicks.app";
     const countPhrase = pct <= 20 ? "Only " + older.length : String(older.length);
     const caption2 = older.length === 0
-      ? "I am older than every single player in the NFL. " + kicker + "."
+      ? kicker
       : countPhrase + (older.length === 1 ? " NFL player is" : " NFL players are") + " older than me. " + kicker + ". My age twin is " + closest.name + ", " + gapLabel + " " + gapWordMe + ".";
 
     return {
@@ -428,6 +442,7 @@ class Component extends DCLogic {
       sharePctW: Math.max(2, pct) + "%",
       sharePctLine: pct + "% of the league is older than me",
       verdictKicker: kicker,
+      twinLine: twinLine,
 
       closest: {
         name: closest.name,
