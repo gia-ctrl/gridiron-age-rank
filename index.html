@@ -256,9 +256,9 @@ button{font-family:inherit;}
           </button>
 
           <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:9px; margin-top:9px;">
-            <sc-for list="{{ shareTargets }}" as="t" hint-placeholder-count="3">
-              <button sc-camel-on-click="{{ onShareTo.bind(null, t.key) }}" style="height:48px; border:1px solid rgba(239,235,224,.28); border-radius:6px; background:transparent; cursor:pointer; font-family:'JetBrains Mono',monospace; font-size:10.5px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#EFEBE0;" style-hover="background:#EFEBE0; color:#111C19;">{{ t.label }}</button>
-            </sc-for>
+            <button sc-camel-on-click="{{ shareX }}" style="height:48px; border:1px solid rgba(239,235,224,.28); border-radius:6px; background:transparent; cursor:pointer; font-family:'JetBrains Mono',monospace; font-size:10.5px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#EFEBE0;" style-hover="background:#EFEBE0; color:#111C19;">X (Twitter)</button>
+            <button sc-camel-on-click="{{ shareWa }}" style="height:48px; border:1px solid rgba(239,235,224,.28); border-radius:6px; background:transparent; cursor:pointer; font-family:'JetBrains Mono',monospace; font-size:10.5px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#EFEBE0;" style-hover="background:#EFEBE0; color:#111C19;">WhatsApp</button>
+            <button sc-camel-on-click="{{ shareTg }}" style="height:48px; border:1px solid rgba(239,235,224,.28); border-radius:6px; background:transparent; cursor:pointer; font-family:'JetBrains Mono',monospace; font-size:10.5px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#EFEBE0;" style-hover="background:#EFEBE0; color:#111C19;">Telegram</button>
           </div>
 
           <button sc-camel-on-click="{{ onCloseShare }}" style="width:100%; margin-top:16px; border:0; background:none; cursor:pointer; font-family:'JetBrains Mono',monospace; font-size:10.5px; font-weight:700; letter-spacing:.16em; text-transform:uppercase; color:#A8B0AB; padding:10px 0;" style-hover="color:#fff;">Back to my result</button>
@@ -414,21 +414,9 @@ class Component extends DCLogic {
       caption: caption2,
       copyLabel: S.copied ? "Copied ✓" : "Copy",
       copyFg: S.copied ? "#FF4B1F" : "#A8B0AB",
-      shareTargets: [
-        { label: "X (Twitter)", key: "x" },
-        { label: "WhatsApp", key: "wa" },
-        { label: "Telegram", key: "tg" },
-      ],
-      onShareTo: (key) => {
-        const url = encodeURIComponent("https://" + (this.props.shareUrl ?? "gridiron.getpicks.app"));
-        const txt = encodeURIComponent(caption2);
-        const links = {
-          x:  "https://x.com/intent/tweet?text=" + txt + "&url=" + url,
-          wa: "https://wa.me/?text=" + txt + "%20" + url,
-          tg: "https://t.me/share/url?url=" + url + "&text=" + txt,
-        };
-        if (links[key]) window.open(links[key], "_blank");
-      },
+      shareX: () => { const url = encodeURIComponent("https://" + (this.props.shareUrl ?? "gridiron.getpicks.app")); const txt = encodeURIComponent(caption2); window.open("https://x.com/intent/tweet?text=" + txt + "&url=" + url, "_blank"); },
+      shareWa: () => { const url = encodeURIComponent("https://" + (this.props.shareUrl ?? "gridiron.getpicks.app")); const txt = encodeURIComponent(caption2); window.open("https://wa.me/?text=" + txt + "%20" + url, "_blank"); },
+      shareTg: () => { const url = encodeURIComponent("https://" + (this.props.shareUrl ?? "gridiron.getpicks.app")); const txt = encodeURIComponent(caption2); window.open("https://t.me/share/url?url=" + url + "&text=" + txt, "_blank"); },
 
       asking: !S.answered,
       answered: S.answered,
