@@ -295,11 +295,13 @@ class Component extends DCLogic {
   componentWillUnmount() { clearInterval(this._t); }
 
   componentDidMount() {
-      // Fetch counter
-      fetch('https://api.countapi.xyz/get/gridiron-age-rank/checks')
-        .then(r => r.json())
-        .then(d => { if (d.value) this.setState({ globalCount: d.value }); })
-        .catch(() => {});
+      // Local counter with seed
+      try {
+        const raw = localStorage.getItem('gridiron_checks') || '0';
+        const local = parseInt(raw);
+        const seed = 847; // base count
+        this.setState({ globalCount: seed + local });
+      } catch(e) {}
     fetch("roster.json")
       .then(r => r.json())
       .then(list => this.setState({ roster: list.map(p => ({ name: p.n, team: p.t, pos: p.p, photo: p.h || "", dob: new Date(p.d + "T00:00:00Z") })) }))
@@ -425,8 +427,7 @@ class Component extends DCLogic {
           const key = 'gridiron_checks';
           const count = parseInt(localStorage.getItem(key) || '0') + 1;
           localStorage.setItem(key, count);
-          // Also hit a simple counter API
-          fetch('https://api.countapi.xyz/hit/gridiron-age-rank/checks').catch(()=>{});
+  
         } catch(e) {}
       },
       onReset: () => { clearInterval(this._t); this.setState({ answered: false, listOpen: false }); },
