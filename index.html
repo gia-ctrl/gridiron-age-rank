@@ -52,6 +52,9 @@ button{font-family:inherit;}
       <span style="min-width:0;">
         <span style="display:block; font-family:'JetBrains Mono',monospace; font-size:9.5px; font-weight:700; letter-spacing:.2em; text-transform:uppercase; color:#111C19;">Gridiron</span>
         <span style="display:block; font-family:'JetBrains Mono',monospace; font-size:9.5px; font-weight:700; letter-spacing:.2em; text-transform:uppercase; color:#8A9490; margin-top:4px;">{{ seasonLabel }}</span>
+        <sc-if value="{{ globalCountLabel }}">
+          <span style="display:block; font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:.12em; color:#FF4B1F; margin-top:6px;">{{ globalCountLabel }}</span>
+        </sc-if>
       </span>
       <span style="margin-left:auto; font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.14em; text-transform:uppercase; color:#8A9490;">{{ rosterLabel }}</span>
     </div>
@@ -287,11 +290,16 @@ button{font-family:inherit;}
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:700,&quot;height&quot;:1100},&quot;seasonLabel&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Season 2026 / 27&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Content&quot;},&quot;shareUrl&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;gridiron.getpicks.app&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Content&quot;},&quot;dataNote&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Active NFL rosters · nflverse&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Content&quot;},&quot;showPicks&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Branding&quot;}}">
 class Component extends DCLogic {
-  state = { roster: null, month: 3, day: 11, year: 2001, answered: false, listOpen: false, shown: 0, shareOpen: false, copied: false, makeCardLabel: 'Make my card' };
+  state = { roster: null, month: 3, day: 11, year: 2001, answered: false, listOpen: false, shown: 0, shareOpen: false, copied: false, makeCardLabel: 'Make my card', globalCount: 0 };
 
   componentWillUnmount() { clearInterval(this._t); }
 
   componentDidMount() {
+      // Fetch counter
+      fetch('https://api.countapi.xyz/get/gridiron-age-rank/checks')
+        .then(r => r.json())
+        .then(d => { if (d.value) this.setState({ globalCount: d.value }); })
+        .catch(() => {});
     fetch("roster.json")
       .then(r => r.json())
       .then(list => this.setState({ roster: list.map(p => ({ name: p.n, team: p.t, pos: p.p, photo: p.h || "", dob: new Date(p.d + "T00:00:00Z") })) }))
@@ -402,7 +410,25 @@ class Component extends DCLogic {
       onMonth: e => this.setState({ month: +e.target.value }),
       onDay: e => this.setState({ day: +e.target.value }),
       onYear: e => this.setState({ year: +e.target.value }),
-      onSubmit: () => { this.setState({ answered: true, shown: 0 }); this.animateTo(older.length); },
+      onSubmit: () => {
+        this.setState({ answered: true, shown: 0 });
+        this.animateTo(older.length);
+        // GA event
+        if (window.gtag) {
+          gtag('event', 'result_viewed', {
+            'older_count': older.length,
+            'pct': Math.round(older.length / this._total * 100)
+          });
+        }
+        // Increment counter
+        try {
+          const key = 'gridiron_checks';
+          const count = parseInt(localStorage.getItem(key) || '0') + 1;
+          localStorage.setItem(key, count);
+          // Also hit a simple counter API
+          fetch('https://api.countapi.xyz/hit/gridiron-age-rank/checks').catch(()=>{});
+        } catch(e) {}
+      },
       onReset: () => { clearInterval(this._t); this.setState({ answered: false, listOpen: false }); },
       onToggleList: () => this.setState(s => ({ listOpen: !s.listOpen })),
       onShare: () => this.setState({ shareOpen: true, copied: false }),
@@ -456,6 +482,8 @@ class Component extends DCLogic {
       sharePctW: Math.max(2, pct) + "%",
       sharePctLine: pct + "% of the league is older than me",
       verdictKicker: kicker,
+      globalCount: S.globalCount,
+      globalCountLabel: S.globalCount > 0 ? (S.globalCount + 1).toLocaleString() + " people have checked their rank" : "",
       twinLine: twinLine,
 
       closest: {
